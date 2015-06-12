@@ -1,0 +1,15 @@
+﻿Table 1.
+        Parameters of the emergency logistics network (Yuan and Wang<comma> 2009).
+(vi<comma> vj),<MathML>,(vi<comma> vj),<MathML>,(vi<comma> vj),<MathML>
+(1<comma> 2),(50<comma> 100<comma> 0.64<comma> 0.19),(6<comma> 16),(100<comma> 115<comma> 0.66<comma> 0.19),(14<comma> 10),(80<comma> 115<comma> 0.89<comma> 0.08)
+(1<comma> 6),(30<comma> 60<comma> 0.63<comma> 0.17),(7<comma> 8),(40<comma> 90<comma> 0.69<comma> 0.18),(14<comma> 15),(60<comma> 105<comma> 0.84<comma> 0.06)
+(1<comma> 11),(70<comma> 110<comma> 0.64<comma> 0.19),(8<comma> 4),(40<comma> 85<comma> 0.72<comma> 0.13),(15<comma> 20),(30<comma> 90<comma> 0.85<comma> 0.06)
+(2<comma> 3),(30<comma> 60<comma> 0.68<comma> 0.19),(8<comma> 13),(30<comma> 75<comma> 0.72<comma> 0.11),(16<comma> 17),(80<comma> 115<comma> 0.65<comma> 0.16)
+(2<comma> 7),(40<comma> 70<comma> 0.62<comma> 0.16),(9<comma> 5),(70<comma> 110<comma> 0.83<comma> 0.09),(16<comma> 18),(110<comma> 120<comma> 0.63<comma> 0.15)
+(3<comma> 4),(80<comma> 100<comma> 0.72<comma> 0.11),(9<comma> 14),(40<comma> 90<comma> 0.88<comma> 0.00),(17<comma> 13),(40<comma> 80<comma> 0.71<comma> 0.12)
+(3<comma> 8),(60<comma> 95<comma> 0.75<comma> 0.11),(10<comma> 15),(50<comma> 105<comma> 0.89<comma> 0.07),(17<comma> 18),(40<comma> 75<comma> 0.75<comma> 0.14)
+(4<comma> 5),(110<comma> 120<comma> 0.76<comma> 0.1),(11<comma> 16),(30<comma> 70<comma> 0.69<comma> 0.17),(18<comma> 13),(60<comma> 115<comma> 0.79<comma> 0.12)
+(4<comma> 9),(40<comma> 75<comma> 0.74<comma> 0.12),(12<comma> 8),(30<comma> 65<comma> 0.79<comma> 0.12),(18<comma> 19),(70<comma> 110<comma> 0.7<comma> 0.11)
+(5<comma> 10),(60<comma> 110<comma> 0.88<comma> 0.07),(12<comma> 17),(40<comma> 100<comma> 0.75<comma> 0.13),(18<comma> 20),(120<comma> 120<comma> 0.73<comma> 0.14)
+(6<comma> 7),(30<comma> 65<comma> 0.65<comma> 0.15),(13<comma> 9),(30<comma> 80<comma> 0.8<comma> 0.15),(19<comma> 15),(40<comma> 75<comma> 0.83<comma> 0.08)
+(6<comma> 12),(60<comma> 105<comma> 0.62<comma> 0.16),(13<comma> 19),(110<comma> 120<comma> 0.78<comma> 0.14),(19<comma> 20),(70<comma> 105<comma> 0.89<comma> 0.08)
