@@ -32,7 +32,7 @@ int cl=15;
 int M=10;
 int alpha_ant=1;
 int beta_ant=2;
-float q_0=0.9;
+float q_0=0.5;
 
 
 /***** Estructuras de representación *****/
@@ -56,17 +56,14 @@ float time_tour(vector <int> &tour) {
     vector <float> times;
     for(int index = 0; index<size; index++){
         if (index < size - 1){
-            i =  tour[index]-1;
-            j = tour[index+1]-1;
+            i =  tour[index];
+            j = tour[index+1];
             if(betas[i][j]==0.0){
                 t_2 = large[i][j]/(ss[i][j]*alphas[i][j]) + t_1;
             }
             else
                 t_2 = -log(-(large[i][j]*betas[i][j])/(ss[i][j]*alphas[i][j]) \
                     + exp(-betas[i][j]*t_1))/betas[i][j];
-            
-            cout << i+1 << " "  << j+1  << " t_1: " << t_1 << " t_2: " << t_2 << endl;
-            t_1=t_2;
         } 
     }
     return t_2;
@@ -95,11 +92,14 @@ float time_neighbour(int start, int end, float t_1) {
     return t_2;
 }
 
-vector <int> neighbours(int town){
+vector <int> neighbours(int town, vector<int> tour){
+
+    std::vector<int>::iterator it = find (tour.begin(), tour.end(), 30);
     vector <int> candidate_list; 
     //Definir si el candidate list tiene un limite.
     for(int i=0; i<N; i++){
-        if(large[town][i]!=0){
+        it = find (tour.begin(), tour.end(), i);
+        if(it == tour.end() && large[town][i]!=0){
             candidate_list.push_back(i);
         }
     }
@@ -115,22 +115,28 @@ double RandomFloat() {
 }
 
 
-int next_town(int town){
-    vector <int> candidate_list = neighbours(town);
+int next_town(int town, vector<int> tour){
+    vector <int> candidate_list = neighbours(tour.back(), tour);
     vector <float> P(N,0);
     float denomitador = 0;
     float eta;
     float acu = 0.0;
 
     //Obtener el denominador
+    //cout << "La lista de candidados es: ";
     for(std::vector<int>::iterator it = candidate_list.begin(); it != candidate_list.end(); ++it){
-        eta = 1/time_neighbour(town,*it,0);
+        //cout << *it << ",";
+        vector<int> new_tour = tour;
+        new_tour.push_back(*it);
+        eta = 1/time_tour(new_tour);
         denomitador += pow(tau[town][*it],alpha_ant)*pow(eta,beta_ant);        
     }
-    
+    //cout << "Fin lista" << endl;
     //Crear las probalidades
     for(std::vector<int>::iterator it = candidate_list.begin(); it != candidate_list.end(); ++it){
-        eta = 1/time_neighbour(town,*it,0);
+        vector<int> new_tour = tour;
+        new_tour.push_back(*it);
+        eta = 1/time_tour(new_tour);
         P[*it] = pow(tau[town][*it],alpha_ant)*pow(eta,beta_ant)/denomitador;
     }
 
@@ -145,17 +151,12 @@ int next_town(int town){
         //El azar dice
         double random_value = RandomFloat();
         for(std::vector<int>::iterator it = candidate_list.begin(); it != candidate_list.end(); ++it){
-            eta = 1/time_neighbour(town,*it,0);
-            P[*it] = pow(tau[town][*it],alpha_ant)*pow(eta,beta_ant)/denomitador;
+            //cout << random_value << " Probalidad para la ciudad " << *it << " = " << P[*it] << endl;
             acu += P[*it];
             if(random_value <= acu)
                 return *it;
         }        
     }
-
-
-
-
 }
 
 /**
@@ -295,7 +296,21 @@ int main(int argc, char* argv[]) {
        ants.push_back(column);
     }
 
-    cout << next_town(0);
+    for(int i=0; i < M; i++){
+        ants[i].push_back(0);
+        while(true){
+            int next = next_town(0, ants[0]);
+            ants[i].push_back(next);
+            if(next==19)
+                break;
+        }       
+    }
+
+    for(int i=0; i < M; i++){
+        cout << "La lista del tour es: ";
+        for(std::vector<int>::iterator it = ants[0].begin(); it != ants[0].end(); ++it){
+            cout << *it+1 << ",";
+    }
 /*   for(i=0; i < M; i++){
         q = RandomFloat()
         if(q <= q_0){
