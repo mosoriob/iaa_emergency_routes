@@ -1,26 +1,19 @@
 #include <iostream>
 #include <chrono>
 #include <random>
-#include <vector>
 
-using namespace std;
-
-template <typename T>
-std::vector<size_t> ordered(std::vector<T> const& values) {
-    std::vector<size_t> indices(values.size());
-    std::iota(begin(indices), end(indices), static_cast<size_t>(0));
-
-    std::sort(
-        begin(indices), end(indices),
-        [&](size_t a, size_t b) { return values[a] > values[b]; }
-    );
-    return indices;
-}
-
+using namespace s
 int main()
 {
-    vector <int> v = {20,40,10,20};
-    vector <size_t> i = ordered<int>(v);
-    cout << i[0] << endl;
+  // construct a trivial random generator engine from a time-based seed:
+  unsigned seed = chrono::system_clock::now().time_since_epoch().count();
+  default_random_engine generator (seed);
+
+  uniform_real_distribution<double> distribution (0.0,1.0);
+
+  cout << "some random numbers between 0.0 and 100.0: " << endl;
+  for (int i=0; i<10; ++i)
+    cout << distribution(generator) << endl;
+
   return 0;
 }
