@@ -43,17 +43,20 @@ float time_tour(vector <int> &tour) {
     vector <float> times;
     for(int index = 0; index<size; index++){
         if (index < size - 1){
-            i =  tour[index];
+            i = tour[index];
             j = tour[index+1];
             if(betas[i][j]==0.0){
                 t_2 = large[i][j]/(ss[i][j]*alphas[i][j]) + t_1;
             }
-            else
-                t_2 = -log(-(large[i][j]*betas[i][j])/(ss[i][j]*alphas[i][j]) \
-                    + exp(-betas[i][j]*t_1))/betas[i][j] ;
+            else{
+                t_2 = log( (alphas[i][j]*ss[i][j])/( alphas[i][j]*ss[i][j]*exp(-betas[i][j]*t_1) - betas[i][j]*large[i][j]) )/betas[i][j];
+            }
+
+
         } 
         t_1=t_2;
     }
+
     return t_2;
 }
 
@@ -77,45 +80,29 @@ float distance_tour(vector <int> &tour) {
 }
 
 
-/*
-Calcula el tiempo del necesario para ir entre
-la ciudad start y end.
-Considera el tiempo inicial.
-*/
-/*
-Params:
-start: la ciudad de inicio
-end: la ciudad destino
-t_1 el tiempo inicial
-*/
-float time_neighbour(int start, int end, float t_1) {
-    float t_2=0;
-    //start=start-1;
-    //end=end-1;
-    if(betas[start][end]==0.0)
-        t_2 = large[start][end]/(ss[start][end]*alphas[start][end]) + t_1;
-    else
-        t_2 = -log(-(large[start][end]*betas[start][end])/(ss[start][end]*alphas[start][end]) \
-            + exp(-betas[start][end]*t_1))/betas[start][end];
-    return t_2;
-}
-
 vector <int> neighbours(int town, vector<int> tour){
+    for(std::vector<int>::iterator it2 = tour.begin(); it2 != tour.end(); ++it2){
+        ////cout <<  *it2 << ",";       
+    }
+    ////cout << endl;
 
-    std::vector<int>::iterator it = find (tour.begin(), tour.end(), 30);
     vector <int> candidate_list; 
     //Definir si el candidate list tiene un limite.
     for(int i=0; i<N; i++){
-        it = find (tour.begin(), tour.end(), i);
-        if(it == tour.end() && large[town][i]!=0){
+        
+        std::vector<int>::iterator it = find (tour.begin(), tour.end(), i);
+        if(it == tour.end() && large[town][i]!=0 && i!=0){
             candidate_list.push_back(i);
         }
     }
+
+    //cout << "Fin Lista" << endl;
     return candidate_list;
+
 
 }
 
-double RandomFloat() {
+double random_float() {
   unsigned seed = chrono::system_clock::now().time_since_epoch().count();
   default_random_engine generator (seed);
   uniform_real_distribution<double> distribution (0.0,1.0);
@@ -128,6 +115,7 @@ void update_pheromene(int i, int j){
 
 int next_town(int town, vector<int> tour){
     int start = tour.back();
+    town = start;
     int end;
 
     vector <int> candidate_list = neighbours(start, tour);
@@ -136,11 +124,24 @@ int next_town(int town, vector<int> tour){
     float eta;
     float acu = 0.0;
 
+
+
     //Obtener el denominador
     for(std::vector<int>::iterator it = candidate_list.begin(); it != candidate_list.end(); ++it){
         vector<int> new_tour = tour;
         new_tour.push_back(*it);
-        eta = 1/time_tour(new_tour);
+        //cout << "Variables" << endl;
+        //cout << "Se añade " << *it << endl;
+        double time_to = time_tour(new_tour);
+        eta = 1/time_to;
+        //cout << "ok" << endl;
+        //cout << "=========================" << endl;
+        //cout << "Entre " << town << " y " << *it << endl;
+        //cout << "TAU" << tau[town][*it] << endl;
+        //cout << "TIME" << time_to << endl;
+        //cout << "ETA" << eta << endl;
+        //cout << "=========================" << endl;
+
         denomitador += pow(tau[town][*it],alpha_ant)*pow(eta,beta_ant);        
     }
     //Crear las probalidades
@@ -149,21 +150,31 @@ int next_town(int town, vector<int> tour){
         new_tour.push_back(*it);
         eta = 1/time_tour(new_tour);
         P[*it] = pow(tau[town][*it],alpha_ant)*pow(eta,beta_ant)/denomitador;
+
+        //cout << *it << "-" << P[*it] << "-" << denomitador << endl;
     }
 
-    double q = RandomFloat();
+    double q = random_float();
     if(q < q_0){
+        //cout << "Elite" << endl;
         //El mejor es el primero del vector ordenado
         vector <size_t> order = ordered<float>(P);
         end = order[0];
     }
     else{
         //El azar dice
-        double random_value = RandomFloat();
+        //cout << "Azar" << endl;
+
+        double random_value = random_float();
         for(std::vector<int>::iterator it = candidate_list.begin(); it != candidate_list.end(); ++it){
+            //cout << "Elige " << *it << "?";
             acu += P[*it];
-            if(random_value <= acu)
+            if(random_value <= acu){
                 end = *it;
+            }
+            else{
+                end = candidate_list.back();
+            }
         }        
     }
     update_pheromene(start, end);
@@ -220,7 +231,7 @@ void fill(char *name) {
                 ss[i][j] = s;
             }
             else {
-                cout << "WARNING: failed to decode line '" << line << "'\n";
+                //cout << "WARNING: failed to decode line '" << line << "'\n";
             }
         }
         cnt++;

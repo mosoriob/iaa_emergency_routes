@@ -4,7 +4,8 @@ using namespace std;
 
 
 /***** Parametros del problema *****/
-int N;
+int N=20;
+int loops=2000;
 int cl=15;
 int M=10;
 int alpha_ant=1;
@@ -39,20 +40,32 @@ int main(int argc, char* argv[]) {
 
     create_tau(tau);
 
+    bool while_exit=false;
+    int next, old_next=0;
     vector <int> column;
     for(int i=0; i < M; i++){
        ants.push_back(column);
     }
-    for(int j=0; j<10; j++)
+    //ants[0] = {0,5,11,7,12,8,13,14,19};
+    //cout << time_tour(ants[0]);
+    //return 0;
+    for(int j=0; j<loops; j++){
+
         for(int i=0; i<M;i++){
             ants[i].push_back(0);
-            while(true){
-                int next = next_town(0, ants[i]);
+
+            old_next=0;
+            while_exit=false;
+            do{
+                next = next_town(0, ants[i]);
                 ants[i].push_back(next);
-                if(next==19){
-                    break;
-                }       
-            }
+
+                //Si completo el tour o se quedó pegado
+                if(next==19 || old_next == next)
+                    while_exit=true;
+                old_next = next;
+                
+            }while(!while_exit);
             if (best_time == 0 || time_tour(ants[i]) < best_time ){
                 best_time = time_tour(ants[i]);
                 best_tour = ants[i];
@@ -62,13 +75,14 @@ int main(int argc, char* argv[]) {
             //τij (t) = (1 − ρ)τij(t) + ∆τij(t) + ro ∗ ∆τ_{ij}(t)
             //∆τ_{ij}(t)=1/L+
             //tau[i][j] = (1-ro)*tau[i][j] + ro/best_time
-            cout << "Tour obtenido en la iteracion " << j << ": ";
-            for(std::vector<int>::iterator it = best_tour.begin(); it != best_tour.end(); ++it){
-                cout << *it+1 << ",";     
-            }
-            cout << best_time << endl;
-        }
 
+        }
+    }
+
+    for(std::vector<int>::iterator it = best_tour.begin(); it != best_tour.end(); ++it){
+        cout << *it+1 << ",";     
+    }
+    cout << best_time << endl;
     
     return 0;
 }
