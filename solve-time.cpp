@@ -28,25 +28,20 @@ vector< vector<float> >  tau;
 
 int main(int argc, char* argv[]) {
 
-
-    int best_size = 0, ant_size;
-    float best_time = 0, ant_time;
-    float best_heuristic=0, ant_heuristic;
-
-
-    if( argc != 5){
+    if( argc != 2){
         cout << "usage: " << argv[0] << "<filename>\n";
         exit(0);
     }
     else{
-        R1=atof(argv[2]);
-        best_time=atof(argv[3]);
-        best_size=atoi(argv[4]);
-        R2=1-R1;
+        int i;
         fill(argv[1]);
     }
 
     ifs.open("seeds.txt", ifstream::in);
+
+    int best_size = 0, ant_size;
+    float best_time = 0, ant_time;
+    float best_heuristic=0, ant_heuristic;
 
     vector <int> best_tour;
     vector <int> best_tour_size;
@@ -60,9 +55,8 @@ int main(int argc, char* argv[]) {
     for(int i=0; i < M; i++){
        ants.push_back(column);
     }
-    //ants[0] = {0,5,11,7,12,8,13,14,19};
-    //cout << time_tour(ants[0]);
-    //return 0;
+
+
     for(int j=0; j<loops; j++){
 
         for(int i=0; i<M;i++){
@@ -91,31 +85,18 @@ int main(int argc, char* argv[]) {
             ant_time = time_tour(ants[i]);
             ant_size = ants[i].size();
 
-
-            ant_heuristic = R1*(ant_time - best_time )/best_time + R2*(ant_size - best_size)/best_size;
-            if (best_heuristic == 0 || ant_heuristic < best_heuristic){
-                best_heuristic = ant_heuristic;
-                best_tour = ants[i];
+            if (best_time == 0 || ant_time < best_time ){
+                best_time = ant_time;
+                best_tour_time = ants[i];
             }
 
+
             ants[i].clear();
+
         }
     }
 
-    // for(std::vector<int>::iterator it = best_tour_time.begin(); it != best_tour_time.end(); ++it){
-    //     cout << *it+1 << ",";     
-    // }
-    // cout << " = " << time_tour(best_tour_time) << " - " <<  best_tour_time.size() << endl;
-
-    // for(std::vector<int>::iterator it = best_tour_size.begin(); it != best_tour_size.end(); ++it){
-    //     cout << *it+1 << ",";     
-    // }
-    // cout << " = " << time_tour(best_tour_size) << " - " << best_tour_size.size() << endl;
-
-    // for(std::vector<int>::iterator it = best_tour.begin(); it != best_tour.end(); ++it){
-    //     cout << *it+1 << ",";     
-    // }
-    cout <<  best_heuristic << " " << time_tour(best_tour) << " " << best_tour.size() << endl;
+    cout  << time_tour(best_tour_time) << endl;
 
 
 

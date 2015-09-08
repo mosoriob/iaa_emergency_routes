@@ -9,7 +9,7 @@ extern int beta_ant;
 extern float q_0;
 extern float ro;
 extern float tau_0;
-
+extern ifstream ifs;
 /***** Estructuras de representación *****/
 extern vector< vector<int> >  ants;
 extern vector< vector<float> >  alphas;
@@ -95,21 +95,29 @@ vector <int> neighbours(int town, vector<int> tour){
             candidate_list.push_back(i);
         }
     }
-
-    //cout << "Fin Lista" << endl;
     return candidate_list;
 
 
 }
 
 double random_float() {
+  string line = "";
+  ifs >> line;
+
   unsigned seed = chrono::system_clock::now().time_since_epoch().count();
   default_random_engine generator (seed);
+  //seed_seq seed (line.begin(),line.end());
+  //minstd_rand0 generator (seed);
   uniform_real_distribution<double> distribution (0.0,1.0);
   return distribution(generator);
 }
 
 void update_pheromene(int i, int j){
+    tau[i][j] = (1 - ro)*tau[i][j] + ro*tau_0;
+}
+
+
+void update_pheromene_global(int i, int j){
     tau[i][j] = (1 - ro)*tau[i][j] + ro*tau_0;
 }
 
