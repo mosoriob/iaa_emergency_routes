@@ -102,29 +102,7 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    // for(std::vector<int>::iterator it = best_tour_time.begin(); it != best_tour_time.end(); ++it){
-    //     cout << *it+1 << ",";     
-    // }
-    // cout << " = " << time_tour(best_tour_time) << " - " <<  best_tour_time.size() << endl;
-
-    // for(std::vector<int>::iterator it = best_tour_size.begin(); it != best_tour_size.end(); ++it){
-    //     cout << *it+1 << ",";     
-    // }
-    // cout << " = " << time_tour(best_tour_size) << " - " << best_tour_size.size() << endl;
-
-    // for(std::vector<int>::iterator it = best_tour.begin(); it != best_tour.end(); ++it){
-    //     cout << *it+1 << ",";     
-    // }
     cout <<  best_heuristic << " " << time_tour(best_tour) << " " << best_tour.size() << endl;
-
-
-
-    //cout << "El mejor fitness " << best_heuristic << endl;
-    // cout << "BEST NODE" << endl;
-    // for(std::vector<int>::iterator it = best_nodes.begin(); it != best_nodes.end(); ++it){
-    //     cout << *it+1 << ",";     
-    // }
-    // cout << best_nodes.size() << endl;
-
+    
     return 0;
 }

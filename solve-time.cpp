@@ -98,14 +98,5 @@ int main(int argc, char* argv[]) {
 
     cout  << time_tour(best_tour_time) << endl;
 
-
-
-    //cout << "El mejor fitness " << best_heuristic << endl;
-    // cout << "BEST NODE" << endl;
-    // for(std::vector<int>::iterator it = best_nodes.begin(); it != best_nodes.end(); ++it){
-    //     cout << *it+1 << ",";     
-    // }
-    // cout << best_nodes.size() << endl;
-
     return 0;
 }
