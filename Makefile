@@ -14,4 +14,4 @@ size:
 	g++ -std=c++11 -o solve-size solve-size.o functions.o
 
 clean:
-	rm solve solve-size solve-time
+	rm solve solve-size solve-time *.o
