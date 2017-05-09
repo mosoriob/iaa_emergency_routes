@@ -55,9 +55,7 @@ int main(int argc, char* argv[]) {
     for(int i=0; i < M; i++){
        ants.push_back(column);
     }
-    //ants[0] = {0,5,11,7,12,8,13,14,19};
-    //cout << time_tour(ants[0]);
-    //return 0;
+
     for(int j=0; j<loops; j++){
 
         for(int i=0; i<M;i++){
@@ -75,7 +73,7 @@ int main(int argc, char* argv[]) {
                     imposible=true;
                 }
                 old_next = next;
-            }while(!while_exit);
+            } while(!while_exit);
 
 
             if(imposible){
