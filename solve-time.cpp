@@ -53,7 +53,7 @@ int main(int argc, char* argv[]) {
         tau_0=atof(argv[9]);
     }
 
-    ifs.open("seeds.txt", ifstream::in);
+    ifs.open("seeds/seeds.txt", ifstream::in);
 
     int best_size = 0, ant_size;
     float best_time = 0, ant_time;
