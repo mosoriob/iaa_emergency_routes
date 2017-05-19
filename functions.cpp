@@ -11,12 +11,13 @@ extern float ro;
 extern float tau_0;
 extern ifstream ifs;
 /***** Estructuras de representación *****/
-extern vector< vector<int> >  ants;
+extern vector< vector<int> >    ants;
 extern vector< vector<float> >  alphas;
 extern vector< vector<float> >  betas;
 extern vector< vector<float> >  large;
 extern vector< vector<float> >  ss;
 extern vector< vector<float> >  tau;
+extern vector< string >  safe_areas;
 
 
 template <typename T>
@@ -80,6 +81,22 @@ float distance_tour(vector <int> &tour) {
 }
 
 
+/*
+Calcula el tiempo que toma un tour
+*/
+void best_tour_update_pheromone(vector <int> &tour, float best_tour_time) {
+    int size = (int) tour.size();
+    int i, j;
+    for(int index = 0; index<size; index++){
+        if (index < size - 1){
+            i =  tour[index];
+            j = tour[index+1];
+            tau[i][j] = (1 - ro)*tau[i][j] + ro*(1/best_tour_time);
+        } 
+    }
+}
+
+
 vector <int> neighbours(int town, vector<int> tour){
     for(std::vector<int>::iterator it2 = tour.begin(); it2 != tour.end(); ++it2){
         ////cout <<  *it2 << ",";       
@@ -112,11 +129,12 @@ double random_float() {
   return distribution(generator);
 }
 
+//favorecer la exploracion, haciendo menos atractivos los nodos visitados
 void update_pheromene(int i, int j){
     tau[i][j] = (1 - ro)*tau[i][j] + ro*tau_0;
 }
 
-
+//
 void update_pheromene_global(int i, int j){
     tau[i][j] = (1 - ro)*tau[i][j] + ro*tau_0;
 }
@@ -229,6 +247,13 @@ void fill(char *name) {
             create_matrix(ss);
             create_matrix(large);
         }
+        else if(cnt == 1){
+            stringstream ss(line);
+            string tmp;
+            while(getline(ss,tmp,' ')){
+                safe_areas.push_back(tmp);
+            }
+        }
         else{
             if (lin >> i >> j >> l >> s >> alpha >> beta) {
                 i = i-1;
@@ -239,9 +264,17 @@ void fill(char *name) {
                 ss[i][j] = s;
             }
             else {
-                //cout << "WARNING: failed to decode line '" << line << "'\n";
+                cout << "WARNING: failed to decode line '" << line << "'\n";
             }
         }
         cnt++;
     }
+}
+bool is_safe(int town){
+    for (vector<string>::iterator it = safe_areas.begin(); it!=safe_areas.end(); ++it){
+        if ( stoi(*it) == town ){
+            return true;
+        }
+    }
+    return false;    
 }
