@@ -26,13 +26,13 @@ double R1=1, R2=1-R1;
 ifstream ifs;
 
 /***** Estructuras de representación *****/
-vector< vector<int> >  ants;
+vector< vector<int> >    ants;
 vector< vector<float> >  alphas;
 vector< vector<float> >  betas;
 vector< vector<float> >  large;
 vector< vector<float> >  ss;
 vector< vector<float> >  tau;
-vector<string> safe_areas;
+vector<string>  safe_areas;
 
 int main(int argc, char* argv[]) {
 
@@ -53,8 +53,6 @@ int main(int argc, char* argv[]) {
         tau_0=atof(argv[9]);
     }
 
-    ifs.open("seeds/seeds.txt", ifstream::in);
-
     int best_size = 0, ant_size;
     float best_time = 0, ant_time;
     float best_heuristic=0, ant_heuristic;
@@ -63,6 +61,12 @@ int main(int argc, char* argv[]) {
     vector <int> best_tour_size;
     vector <int> best_tour_time;
 
+
+    ifs.open("seeds/seeds.txt", ifstream::in);
+    if ( !ifs.good() ){
+        cout << "Error opening seed file" << endl;
+        exit (1);
+    }
     create_tau(tau);
 
     bool while_exit=false, imposible=false;

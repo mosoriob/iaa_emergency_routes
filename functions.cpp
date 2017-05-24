@@ -19,7 +19,6 @@ extern vector< vector<float> >  ss;
 extern vector< vector<float> >  tau;
 extern vector< string >  safe_areas;
 
-
 template <typename T>
 std::vector<size_t> ordered(std::vector<T> const& values) {
     std::vector<size_t> indices(values.size());
@@ -50,17 +49,15 @@ float time_tour(vector <int> &tour) {
                 t_2 = large[i][j]/(ss[i][j]*alphas[i][j]) + t_1;
             }
             else{
-                t_2 = log( (alphas[i][j]*ss[i][j])/( alphas[i][j]*ss[i][j]*exp(-betas[i][j]*t_1) - betas[i][j]*large[i][j]) )/betas[i][j];
+                t_2 = log( (alphas[i][j]*ss[i][j])/( alphas[i][j]*ss[i][j]*exp(-betas[i][j]*t_1) \
+                        - betas[i][j]*large[i][j]) )/betas[i][j];
             }
-
-
         } 
         t_1=t_2;
     }
 
     return t_2;
 }
-
 
 /*
 Calcula el tiempo que toma un tour
@@ -80,7 +77,6 @@ float distance_tour(vector <int> &tour) {
     return distance;
 }
 
-
 /*
 Calcula el tiempo que toma un tour
 */
@@ -96,7 +92,6 @@ void best_tour_update_pheromone(vector <int> &tour, float best_tour_time) {
     }
 }
 
-
 vector <int> neighbours(int town, vector<int> tour){
     for(std::vector<int>::iterator it2 = tour.begin(); it2 != tour.end(); ++it2){
         ////cout <<  *it2 << ",";       
@@ -104,17 +99,14 @@ vector <int> neighbours(int town, vector<int> tour){
     ////cout << endl;
 
     vector <int> candidate_list; 
-    //Definir si el candidate list tiene un limite.
+    //todo: Definir si el candidate list tiene un limite.
     for(int i=0; i<N; i++){
-        
         std::vector<int>::iterator it = find (tour.begin(), tour.end(), i);
         if(it == tour.end() && large[town][i]!=0 && i!=0){
             candidate_list.push_back(i);
         }
     }
     return candidate_list;
-
-
 }
 
 double random_float() {
@@ -134,11 +126,6 @@ void update_pheromene(int i, int j){
     tau[i][j] = (1 - ro)*tau[i][j] + ro*tau_0;
 }
 
-//
-void update_pheromene_global(int i, int j){
-    tau[i][j] = (1 - ro)*tau[i][j] + ro*tau_0;
-}
-
 int next_town(int town, vector<int> tour){
     int start = tour.back();
     town = start;
@@ -149,8 +136,6 @@ int next_town(int town, vector<int> tour){
     float denomitador = 0;
     float eta;
     float acu = 0.0;
-
-
 
     //Obtener el denominador
     for(std::vector<int>::iterator it = candidate_list.begin(); it != candidate_list.end(); ++it){
@@ -216,7 +201,7 @@ void create_matrix(vector< vector<float> > &matrix){
 }
 
 void create_tau(vector< vector<float> > &matrix){
-    vector <float> newColumn(N,0.000001);
+    vector <float> newColumn(N,q_0);
     //fill(newColumn.begin(),newColumn.end(),0);
     for(int i=0; i < N; i++)
         matrix.push_back(newColumn);
@@ -227,15 +212,17 @@ void fill(char *name) {
     /* Rellena arreglo con los numeros de las ciudades, poniendolas en
     el orden 1,2,...,N. Rellena el arreglo de la posicion de las ciudades. */
     ifstream infile (name);
+    if ( !infile.good() ){
+        cout << "Error opening file" << endl;
+        exit (1);
+    }
 
-
-    int cnt=0,n;
-
-    int l,s,i,j;
+    int cnt=0;
+    int l,s,i,j,n;
     float alpha, beta;
     char caracter, c_t_max[3];
-
     istringstream lin;
+
     for (string line; getline(infile, line); ) {
         lin.clear();
         lin.str(line);
@@ -269,7 +256,9 @@ void fill(char *name) {
         }
         cnt++;
     }
+    infile.close();
 }
+
 bool is_safe(int town){
     for (vector<string>::iterator it = safe_areas.begin(); it!=safe_areas.end(); ++it){
         if ( stoi(*it) == town ){
