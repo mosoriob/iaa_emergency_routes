@@ -18,3 +18,7 @@ int beta_ant=2;
 float q_0=0.5;
 float ro=0.5;
 float tau_0=0.1;
+
+Changes
+20170523: Multiple safe areas.
+

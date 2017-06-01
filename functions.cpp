@@ -10,6 +10,7 @@ extern float q_0;
 extern float ro;
 extern float tau_0;
 extern ifstream ifs;
+extern bool DEBUG;
 /***** Estructuras de representación *****/
 extern vector< vector<int> >    ants;
 extern vector< vector<float> >  alphas;
@@ -31,6 +32,19 @@ std::vector<size_t> ordered(std::vector<T> const& values) {
     return indices;
 }
 
+template <typename T>
+std::vector<size_t> orderedReverse(std::vector<T> const& values) {
+    std::vector<size_t> indices(values.size());
+    std::iota(begin(indices), end(indices), static_cast<size_t>(0));
+
+    std::sort(
+        begin(indices), end(indices),
+        [&](size_t a, size_t b) { return values[a] < values[b]; }
+    );
+    return indices;
+}
+
+
 /*
 Calcula el tiempo que toma un tour
 */
@@ -49,13 +63,20 @@ float time_tour(vector <int> &tour) {
                 t_2 = large[i][j]/(ss[i][j]*alphas[i][j]) + t_1;
             }
             else{
-                t_2 = log( (alphas[i][j]*ss[i][j])/( alphas[i][j]*ss[i][j]*exp(-betas[i][j]*t_1) \
-                        - betas[i][j]*large[i][j]) )/betas[i][j];
+                cout << alphas[i][j] << endl;
+                t_2 = log((alphas[i][j]*ss[i][j])/(alphas[i][j]*ss[i][j]*exp(-betas[i][j]*t_1) \
+                        - betas[i][j]*large[i][j]))/betas[i][j];
             }
         } 
         t_1=t_2;
     }
-
+    cout << "DEBUG: "   <<  endl;
+    cout << "DEBUG: t_1 "    <<  t_1 << endl;
+    cout << "DEBUG: alphas " << alphas[i][j] << endl;
+    cout << "DEBUG: ss     " << ss[i][j] << endl;
+    cout << "DEBUG: betas  " << betas[i][j] << endl;
+    cout << "DEBUG: large  " << large[i][j] << endl;
+    cout << "DEBUG: t_2    " << t_2 << endl;
     return t_2;
 }
 
@@ -101,11 +122,19 @@ vector <int> neighbours(int town, vector<int> tour){
     vector <int> candidate_list; 
     //todo: Definir si el candidate list tiene un limite.
     for(int i=0; i<N; i++){
-        std::vector<int>::iterator it = find (tour.begin(), tour.end(), i);
+        std::vector<int>::iterator it = find(tour.begin(), tour.end(), i);
         if(it == tour.end() && large[town][i]!=0 && i!=0){
             candidate_list.push_back(i);
         }
     }
+    if (DEBUG){
+        cout << "number of neighbours: " << candidate_list.size() << endl;
+        for(std::vector<int>::iterator it = candidate_list.begin(); it != candidate_list.end(); ++it){
+            cout << *it << "," ;
+        }
+        cout << endl;
+    }
+
     return candidate_list;
 }
 
@@ -133,9 +162,38 @@ int next_town(int town, vector<int> tour){
 
     vector <int> candidate_list = neighbours(start, tour);
     vector <float> P(N,0);
+    vector <float> TIME(N, 0);
     float denomitador = 0;
     float eta;
     float acu = 0.0;
+
+    //Crear las tiempos
+    for(std::vector<int>::iterator it = candidate_list.begin(); it != candidate_list.end(); ++it){
+        vector<int> new_tour = tour;
+        new_tour.push_back(*it);
+        cout << "ELEMENTO ========= " << *it << endl;
+        TIME[*it] = time_tour(new_tour);
+    }
+    cout << "ELEMENTO ========= " << endl;
+    vector <size_t> orderTime = orderedReverse<float>(TIME);
+    for(int j = 0; j < orderTime.size(); j++){
+        if ( TIME[orderTime[j]] != 0)
+            cout << "ELEMENTO " << orderTime[j] << " " << TIME[orderTime[j]] <<  endl;
+    }
+
+    // cout << "=========================" << endl;
+    // for(std::vector<int>::iterator it = candidate_list.begin(); it != candidate_list.end(); ++it){
+    //     vector<int> new_tour = tour;
+    //     new_tour.push_back(*it);
+    //     double time_to = time_tour(new_tour);
+    //     vector <size_t> order = ordered<int>(P);
+
+    //     if (DEBUG){
+    //         cout << "TIME cl " << *it << " " << time_to << endl;
+    //     }
+    // }
+    // cout << "TIME cl =========================" << endl;
+
 
     //Obtener el denominador
     for(std::vector<int>::iterator it = candidate_list.begin(); it != candidate_list.end(); ++it){
@@ -145,13 +203,14 @@ int next_town(int town, vector<int> tour){
         //cout << "Se añade " << *it << endl;
         double time_to = time_tour(new_tour);
         eta = 1/time_to;
-        //cout << "ok" << endl;
-        //cout << "=========================" << endl;
-        //cout << "Entre " << town << " y " << *it << endl;
-        //cout << "TAU" << tau[town][*it] << endl;
-        //cout << "TIME" << time_to << endl;
-        //cout << "ETA" << eta << endl;
-        //cout << "=========================" << endl;
+        if (DEBUG){
+            cout << "=========================" << endl;
+            cout << "Entre " << town << " y " << *it << endl;
+            cout << "TAU " << tau[town][*it] << endl;
+            cout << "TIME " << time_to << endl;
+            cout << "ETA " << eta << endl;
+            cout << "=========================" << endl;
+        }
 
         denomitador += pow(tau[town][*it],alpha_ant)*pow(eta,beta_ant);        
     }
@@ -161,24 +220,23 @@ int next_town(int town, vector<int> tour){
         new_tour.push_back(*it);
         eta = 1/time_tour(new_tour);
         P[*it] = pow(tau[town][*it],alpha_ant)*pow(eta,beta_ant)/denomitador;
-
-        //cout << *it << "-" << P[*it] << "-" << denomitador << endl;
+        cout << *it << "-" << P[*it] << " - s" << denomitador << endl;
     }
 
     double q = random_float();
     if(q < q_0){
-        //cout << "Elite" << endl;
+        cout << "Elite" << endl;
         //El mejor es el primero del vector ordenado
         vector <size_t> order = ordered<float>(P);
+        cout << "Valores ordenados: " << endl;
+
         end = order[0];
     }
     else{
         //El azar dice
-        //cout << "Azar" << endl;
-
+        cout << "Azar" << endl;
         double random_value = random_float();
         for(std::vector<int>::iterator it = candidate_list.begin(); it != candidate_list.end(); ++it){
-            //cout << "Elige " << *it << "?";
             acu += P[*it];
             if(random_value <= acu){
                 end = *it;
@@ -188,9 +246,11 @@ int next_town(int town, vector<int> tour){
             }
         }        
     }
+    if (DEBUG){
+        cout << "Next node " << end << endl;
+    }
     update_pheromene(start, end);
     return end;
-
 }
 
 void create_matrix(vector< vector<float> > &matrix){

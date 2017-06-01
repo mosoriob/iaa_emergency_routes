@@ -2,6 +2,7 @@
 
 using namespace std;
 
+bool DEBUG=true;
 int N;
 /***** Parametros del problema *****/
 /*
@@ -21,7 +22,6 @@ int beta_ant=2;
 float q_0=0.5;
 float ro=0.5;
 float tau_0=1/(10);
-
 double R1=1, R2=1-R1;
 ifstream ifs;
 
