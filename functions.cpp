@@ -63,20 +63,23 @@ float time_tour(vector <int> &tour) {
                 t_2 = large[i][j]/(ss[i][j]*alphas[i][j]) + t_1;
             }
             else{
-                cout << alphas[i][j] << endl;
+                if (DEBUG)
+                    cout << alphas[i][j] << endl;
                 t_2 = log((alphas[i][j]*ss[i][j])/(alphas[i][j]*ss[i][j]*exp(-betas[i][j]*t_1) \
                         - betas[i][j]*large[i][j]))/betas[i][j];
             }
         } 
         t_1=t_2;
     }
-    cout << "DEBUG: "   <<  endl;
-    cout << "DEBUG: t_1 "    <<  t_1 << endl;
-    cout << "DEBUG: alphas " << alphas[i][j] << endl;
-    cout << "DEBUG: ss     " << ss[i][j] << endl;
-    cout << "DEBUG: betas  " << betas[i][j] << endl;
-    cout << "DEBUG: large  " << large[i][j] << endl;
-    cout << "DEBUG: t_2    " << t_2 << endl;
+    if (DEBUG){
+        cout << "DEBUG: "   <<  endl;
+        cout << "DEBUG: t_1 "    <<  t_1 << endl;
+        cout << "DEBUG: alphas " << alphas[i][j] << endl;
+        cout << "DEBUG: ss     " << ss[i][j] << endl;
+        cout << "DEBUG: betas  " << betas[i][j] << endl;
+        cout << "DEBUG: large  " << large[i][j] << endl;
+        cout << "DEBUG: t_2    " << t_2 << endl;
+    }
     return t_2;
 }
 
@@ -152,18 +155,18 @@ void update_pheromene(int i, int j){
 Funcion que generar la lista de candidatos de acuerdo a cl
 **/
 vector <int> generateCandidateList(vector<int> allNeighbours, vector<int> tour){
-    vector <float> TIME(N, -1);
+    vector <float> timeTour(N, -1);
     vector <int> allCandidateList;
 
     for(std::vector<int>::iterator it = allNeighbours.begin(); it != allNeighbours.end(); ++it){
         vector<int> new_tour = tour;
         new_tour.push_back(*it);
-        TIME[*it] = time_tour(new_tour);
+        timeTour[*it] = time_tour(new_tour);
     }
 
-    vector <size_t> orderTime = orderedReverse<float>(TIME);
+    vector <size_t> orderTime = orderedReverse<float>(timeTour);
     for(int j = 0; j < orderTime.size(); j++){
-        if ( TIME[orderTime[j]] > 0)
+        if ( timeTour[orderTime[j]] > 0)
             allCandidateList.push_back(orderTime[j]);
     }
 
