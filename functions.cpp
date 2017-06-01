@@ -114,28 +114,21 @@ void best_tour_update_pheromone(vector <int> &tour, float best_tour_time) {
 }
 
 vector <int> neighbours(int town, vector<int> tour){
-    for(std::vector<int>::iterator it2 = tour.begin(); it2 != tour.end(); ++it2){
-        ////cout <<  *it2 << ",";       
-    }
-    ////cout << endl;
-
-    vector <int> candidate_list; 
-    //todo: Definir si el candidate list tiene un limite.
+    vector <int> candidateList; 
     for(int i=0; i<N; i++){
         std::vector<int>::iterator it = find(tour.begin(), tour.end(), i);
         if(it == tour.end() && large[town][i]!=0 && i!=0){
-            candidate_list.push_back(i);
+            candidateList.push_back(i);
         }
     }
     if (DEBUG){
-        cout << "number of neighbours: " << candidate_list.size() << endl;
-        for(std::vector<int>::iterator it = candidate_list.begin(); it != candidate_list.end(); ++it){
+        cout << "number of neighbours: " << candidateList.size() << endl;
+        for(std::vector<int>::iterator it = candidateList.begin(); it != candidateList.end(); ++it){
             cout << *it << "," ;
         }
         cout << endl;
     }
-
-    return candidate_list;
+    return candidateList;
 }
 
 double random_float() {
@@ -155,52 +148,50 @@ void update_pheromene(int i, int j){
     tau[i][j] = (1 - ro)*tau[i][j] + ro*tau_0;
 }
 
+/**
+Funcion que generar la lista de candidatos de acuerdo a cl
+**/
+vector <int> generateCandidateList(vector<int> allNeighbours, vector<int> tour){
+    vector <float> TIME(N, -1);
+    vector <int> allCandidateList;
+
+    for(std::vector<int>::iterator it = allNeighbours.begin(); it != allNeighbours.end(); ++it){
+        vector<int> new_tour = tour;
+        new_tour.push_back(*it);
+        TIME[*it] = time_tour(new_tour);
+    }
+
+    vector <size_t> orderTime = orderedReverse<float>(TIME);
+    for(int j = 0; j < orderTime.size(); j++){
+        if ( TIME[orderTime[j]] > 0)
+            allCandidateList.push_back(orderTime[j]);
+    }
+
+    if (allCandidateList.size() > cl)
+        allCandidateList.resize(cl);
+
+    return allCandidateList;
+}
+
 int next_town(int town, vector<int> tour){
     int start = tour.back();
     town = start;
     int end;
 
-    vector <int> candidate_list = neighbours(start, tour);
+    vector <int> allNeighbours = neighbours(start, tour);
     vector <float> P(N,0);
-    vector <float> TIME(N, 0);
     float denomitador = 0;
     float eta;
     float acu = 0.0;
 
-    //Crear las tiempos
-    for(std::vector<int>::iterator it = candidate_list.begin(); it != candidate_list.end(); ++it){
-        vector<int> new_tour = tour;
-        new_tour.push_back(*it);
-        cout << "ELEMENTO ========= " << *it << endl;
-        TIME[*it] = time_tour(new_tour);
-    }
-    cout << "ELEMENTO ========= " << endl;
-    vector <size_t> orderTime = orderedReverse<float>(TIME);
-    for(int j = 0; j < orderTime.size(); j++){
-        if ( TIME[orderTime[j]] != 0)
-            cout << "ELEMENTO " << orderTime[j] << " " << TIME[orderTime[j]] <<  endl;
-    }
-
-    // cout << "=========================" << endl;
-    // for(std::vector<int>::iterator it = candidate_list.begin(); it != candidate_list.end(); ++it){
-    //     vector<int> new_tour = tour;
-    //     new_tour.push_back(*it);
-    //     double time_to = time_tour(new_tour);
-    //     vector <size_t> order = ordered<int>(P);
-
-    //     if (DEBUG){
-    //         cout << "TIME cl " << *it << " " << time_to << endl;
-    //     }
-    // }
-    // cout << "TIME cl =========================" << endl;
+    vector <int> candidateList = generateCandidateList(allNeighbours, tour);
 
 
     //Obtener el denominador
-    for(std::vector<int>::iterator it = candidate_list.begin(); it != candidate_list.end(); ++it){
+    for(std::vector<int>::iterator it = candidateList.begin(); it != candidateList.end(); ++it){
         vector<int> new_tour = tour;
         new_tour.push_back(*it);
-        //cout << "Variables" << endl;
-        //cout << "Se añade " << *it << endl;
+
         double time_to = time_tour(new_tour);
         eta = 1/time_to;
         if (DEBUG){
@@ -215,34 +206,27 @@ int next_town(int town, vector<int> tour){
         denomitador += pow(tau[town][*it],alpha_ant)*pow(eta,beta_ant);        
     }
     //Crear las probalidades
-    for(std::vector<int>::iterator it = candidate_list.begin(); it != candidate_list.end(); ++it){
+    for(std::vector<int>::iterator it = candidateList.begin(); it != candidateList.end(); ++it){
         vector<int> new_tour = tour;
         new_tour.push_back(*it);
         eta = 1/time_tour(new_tour);
         P[*it] = pow(tau[town][*it],alpha_ant)*pow(eta,beta_ant)/denomitador;
-        cout << *it << "-" << P[*it] << " - s" << denomitador << endl;
     }
 
     double q = random_float();
     if(q < q_0){
-        cout << "Elite" << endl;
-        //El mejor es el primero del vector ordenado
         vector <size_t> order = ordered<float>(P);
-        cout << "Valores ordenados: " << endl;
-
         end = order[0];
     }
     else{
-        //El azar dice
-        cout << "Azar" << endl;
         double random_value = random_float();
-        for(std::vector<int>::iterator it = candidate_list.begin(); it != candidate_list.end(); ++it){
+        for(std::vector<int>::iterator it = candidateList.begin(); it != candidateList.end(); ++it){
             acu += P[*it];
             if(random_value <= acu){
                 end = *it;
             }
             else{
-                end = candidate_list.back();
+                end = candidateList.back();
             }
         }        
     }
