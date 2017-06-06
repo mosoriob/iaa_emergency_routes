@@ -1,6 +1,11 @@
-Time
+How to run
+```
 bash time.sh instances/yuan-wang/grade1.txt 100 15 10 1 2 0.5 0.5 0.1
-
+```
+or
+```
+bash run.sh
+```
 
 loops: numbers of iterations
 cl: size of candidate list
