@@ -14,9 +14,9 @@
 
 using namespace std;
 
-float time_tour(vector <int> &tour);
+double time_tour(vector <int> &tour);
 float distance_tour(vector <int> &tour);
-
+void  print_tour(vector <int> &tour);
 void update_pheromene(int i, int j);
 void best_tour_update_pheromone(vector <int> &tour, float best_tour_time);
 void create_matrix(vector< vector<float> > &matrix);

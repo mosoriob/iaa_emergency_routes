@@ -20,6 +20,9 @@ extern vector< vector<float> >  ss;
 extern vector< vector<float> >  tau;
 extern vector< string >  safe_areas;
 
+/*
+Template para ordenar
+*/
 template <typename T>
 std::vector<size_t> ordered(std::vector<T> const& values) {
     std::vector<size_t> indices(values.size());
@@ -48,13 +51,13 @@ std::vector<size_t> orderedReverse(std::vector<T> const& values) {
 /*
 Calcula el tiempo que toma un tour
 */
-float time_tour(vector <int> &tour) {
+double time_tour(vector <int> &tour) {
     int size = (int) tour.size();
     int i;
     int j;
     float t_1=0;
     float t_2=0;
-    vector <float> times;
+    vector <double> times;
     for(int index = 0; index<size; index++){
         if (index < size - 1){
             i = tour[index];
@@ -72,13 +75,8 @@ float time_tour(vector <int> &tour) {
         t_1=t_2;
     }
     if (DEBUG){
-        cout << "DEBUG: "   <<  endl;
         cout << "DEBUG: t_1 "    <<  t_1 << endl;
-        cout << "DEBUG: alphas " << alphas[i][j] << endl;
-        cout << "DEBUG: ss     " << ss[i][j] << endl;
-        cout << "DEBUG: betas  " << betas[i][j] << endl;
-        cout << "DEBUG: large  " << large[i][j] << endl;
-        cout << "DEBUG: t_2    " << t_2 << endl;
+        cout << "DEBUG: t_2  " << t_2 << endl;
     }
     return t_2;
 }
@@ -102,6 +100,17 @@ float distance_tour(vector <int> &tour) {
 }
 
 /*
+Selecciona el siguiente nod
+*/
+void print_tour(vector <int> &tour) {
+    int size = (int) tour.size();
+    for(int index = 0; index<size; index++){
+        cout << tour[index] << ",";
+    }
+}
+
+
+/*
 Calcula el tiempo que toma un tour
 */
 void best_tour_update_pheromone(vector <int> &tour, float best_tour_time) {
@@ -115,7 +124,9 @@ void best_tour_update_pheromone(vector <int> &tour, float best_tour_time) {
         } 
     }
 }
-
+/*
+Entrega la lista de vecinos
+*/
 vector <int> neighbours(int town, vector<int> tour){
     vector <int> candidateList; 
     for(int i=0; i<N; i++){
@@ -146,7 +157,10 @@ double random_float() {
   return distribution(generator);
 }
 
-//favorecer la exploracion, haciendo menos atractivos los nodos visitados
+/*
+Favorecer la exploracion, haciendo menos atractivos los nodos visitados
+*/
+
 void update_pheromene(int i, int j){
     tau[i][j] = (1 - ro)*tau[i][j] + ro*tau_0;
 }
@@ -155,7 +169,7 @@ void update_pheromene(int i, int j){
 Funcion que generar la lista de candidatos de acuerdo a cl
 **/
 vector <int> generateCandidateList(vector<int> allNeighbours, vector<int> tour){
-    vector <float> timeTour(N, -1);
+    vector <double> timeTour(N, -1);
     vector <int> allCandidateList;
 
     for(std::vector<int>::iterator it = allNeighbours.begin(); it != allNeighbours.end(); ++it){
@@ -164,7 +178,7 @@ vector <int> generateCandidateList(vector<int> allNeighbours, vector<int> tour){
         timeTour[*it] = time_tour(new_tour);
     }
 
-    vector <size_t> orderTime = orderedReverse<float>(timeTour);
+    vector <size_t> orderTime = orderedReverse<double>(timeTour);
     for(int j = 0; j < orderTime.size(); j++){
         if ( timeTour[orderTime[j]] > 0)
             allCandidateList.push_back(orderTime[j]);
@@ -175,7 +189,9 @@ vector <int> generateCandidateList(vector<int> allNeighbours, vector<int> tour){
 
     return allCandidateList;
 }
-
+/*
+Selecciona el siguiente nodo
+*/
 int next_town(int town, vector<int> tour){
     int start = tour.back();
     town = start;
@@ -240,24 +256,27 @@ int next_town(int town, vector<int> tour){
     return end;
 }
 
+/*
+Crea matriz generifica
+*/
 void create_matrix(vector< vector<float> > &matrix){
     vector <float> newColumn(N,0);
-    //fill(newColumn.begin(),newColumn.end(),0);
     for(int i=0; i < N; i++)
         matrix.push_back(newColumn);
 }
 
+/*
+Crea matriz tau
+*/
 void create_tau(vector< vector<float> > &matrix){
     vector <float> newColumn(N,q_0);
-    //fill(newColumn.begin(),newColumn.end(),0);
     for(int i=0; i < N; i++)
         matrix.push_back(newColumn);
 }
 
-
+/* Rellena arreglo con los numeros de las ciudades, poniendolas en
+el orden 1,2,...,N. Rellena el arreglo de la posicion de las ciudades. */
 void fill(char *name) {
-    /* Rellena arreglo con los numeros de las ciudades, poniendolas en
-    el orden 1,2,...,N. Rellena el arreglo de la posicion de las ciudades. */
     ifstream infile (name);
     if ( !infile.good() ){
         cout << "Error opening file" << endl;
@@ -306,6 +325,9 @@ void fill(char *name) {
     infile.close();
 }
 
+/*
+Revisa si el nodo es seguro
+*/
 bool is_safe(int town){
     for (vector<string>::iterator it = safe_areas.begin(); it!=safe_areas.end(); ++it){
         if ( stoi(*it) == town ){

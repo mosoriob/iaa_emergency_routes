@@ -119,7 +119,24 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    cout  << time_tour(best_tour_time) << endl;
+    cout << time_tour(best_tour_time) << endl;
+    print_tour(best_tour_time);
+    // vector<int> test_array;
+    // // test_array.push_back(0);
+    // // test_array.push_back(1);
+
+
+    // test_array.push_back(0);
+    // test_array.push_back(5);
+    // test_array.push_back(6);
+    // test_array.push_back(7);
+    // test_array.push_back(12);
+    // test_array.push_back(8);
+    // test_array.push_back(13);
+    // test_array.push_back(14);
+    // test_array.push_back(19);
+
+    // cout  << time_tour(test_array) << endl;
 
     return 0;
 }
