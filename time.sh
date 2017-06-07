@@ -1,4 +1,4 @@
-#bash time.sh grade1.txt 100 15 10 1 2 0.5 0.5 0.1
+#bash time.sh instances/yuan-wang/grade4.txt 100 15 10 1 2 0.5 0.5 0.1
 g++ -std=c++11 -c -o functions.o functions.cpp
 g++ -std=c++11 -c -o solve-time.o solve-time.cpp 
 g++ -std=c++11 -o solve-time solve-time.o functions.o
