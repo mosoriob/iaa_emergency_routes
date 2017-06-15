@@ -101,9 +101,15 @@ int main(int argc, char* argv[]) {
 
 
             if(imposible){
+                if (DEBUG)
+                    cout << "imposible" << endl;
                 imposible=false;
-                break;
+                ants[i].clear();
+                continue;
             }
+
+            //cout << "Hormiga " << i  << " iteracion " << j << endl;
+            cout << time_tour(ants[i]) << endl;
 
             ant_time = time_tour(ants[i]);
             ant_size = ants[i].size();
@@ -119,8 +125,8 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    cout << time_tour(best_tour_time) << endl;
-    print_tour(best_tour_time);
+    //cout << time_tour(best_tour_time) << endl;
+    //print_tour(best_tour_time);
     // vector<int> test_array;
     // // test_array.push_back(0);
     // // test_array.push_back(1);

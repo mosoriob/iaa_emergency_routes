@@ -66,17 +66,27 @@ double time_tour(vector <int> &tour) {
                 t_2 = large[i][j]/(ss[i][j]*alphas[i][j]) + t_1;
             }
             else{
-                if (DEBUG)
-                    cout << alphas[i][j] << endl;
-                t_2 = log((alphas[i][j]*ss[i][j])/(alphas[i][j]*ss[i][j]*exp(-betas[i][j]*t_1) \
-                        - betas[i][j]*large[i][j]))/betas[i][j];
+                double num = alphas[i][j]*ss[i][j];
+                double den1 = alphas[i][j]*ss[i][j]*exp(-betas[i][j]*t_1);
+                double den2 = betas[i][j]*large[i][j];
+                double logValue = (num)/(den1-den2);
+                if (logValue > 0){
+                    t_2 = log(logValue)/betas[i][j];
+                }
+                else {
+                    cout << num << endl;
+                    cout << den1 << endl;
+                    cout << den2 << endl;
+                    cout << logValue <<  " NAN" << endl;
+                    exit(0);
+                }
             }
         } 
         t_1=t_2;
     }
     if (DEBUG){
-        cout << "DEBUG: t_1 "    <<  t_1 << endl;
         cout << "DEBUG: t_2  " << t_2 << endl;
+
     }
     return t_2;
 }
@@ -107,6 +117,7 @@ void print_tour(vector <int> &tour) {
     for(int index = 0; index<size; index++){
         cout << tour[index] << ",";
     }
+    cout << endl;
 }
 
 
@@ -136,7 +147,7 @@ vector <int> neighbours(int town, vector<int> tour){
         }
     }
     if (DEBUG){
-        cout << "number of neighbours: " << candidateList.size() << endl;
+        cout << "Vecinos: " << candidateList.size() << endl;
         for(std::vector<int>::iterator it = candidateList.begin(); it != candidateList.end(); ++it){
             cout << *it << "," ;
         }
@@ -198,6 +209,10 @@ int next_town(int town, vector<int> tour){
     int end;
 
     vector <int> allNeighbours = neighbours(start, tour);
+
+    if (allNeighbours.size() == 0){
+        return town;
+    }
     vector <float> P(N,0);
     float denomitador = 0;
     float eta;
@@ -250,7 +265,7 @@ int next_town(int town, vector<int> tour){
         }        
     }
     if (DEBUG){
-        cout << "Next node " << end << endl;
+        cout << "Next node" << end << endl << endl <<   endl;
     }
     update_pheromene(start, end);
     return end;
