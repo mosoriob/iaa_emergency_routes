@@ -173,7 +173,8 @@ Favorecer la exploracion, haciendo menos atractivos los nodos visitados
 */
 
 void update_pheromene(int i, int j){
-    tau[i][j] = (1 - ro)*tau[i][j] + ro*tau_0;
+    //tau[i][j] = (1 - ro)*tau[i][j] + ro*tau_0;
+
 }
 
 /**

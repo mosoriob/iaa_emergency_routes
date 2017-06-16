@@ -109,7 +109,7 @@ int main(int argc, char* argv[]) {
             }
 
             //cout << "Hormiga " << i  << " iteracion " << j << endl;
-            cout << time_tour(ants[i]) << endl;
+            //cout << time_tour(ants[i]) << endl;
 
             ant_time = time_tour(ants[i]);
             ant_size = ants[i].size();
@@ -119,11 +119,12 @@ int main(int argc, char* argv[]) {
                 best_tour_time = ants[i];
                 best_tour_update_pheromone(best_tour_time, best_time);
             }
-
             ants[i].clear();
 
         }
+
     }
+    cout << best_time << endl;
 
     //cout << time_tour(best_tour_time) << endl;
     //print_tour(best_tour_time);
