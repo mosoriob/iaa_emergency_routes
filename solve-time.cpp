@@ -23,6 +23,7 @@ float q_0=0.5;
 float ro=0.5;
 float tau_0=1/(10);
 double R1=1, R2=1-R1;
+int seedInt;
 ifstream ifs;
 
 /***** Estructuras de representación *****/
@@ -36,7 +37,7 @@ vector<string>  safe_areas;
 
 int main(int argc, char* argv[]) {
 
-    if( argc != 10){
+    if( argc != 11){
         cout << "usage: " << argv[0] << "<filename>\n";
         exit(0);
     }
@@ -51,7 +52,9 @@ int main(int argc, char* argv[]) {
         q_0=atof(argv[7]);
         ro=atof(argv[8]);
         tau_0=atof(argv[9]);
+        seedInt=atoi(argv[10]);
     }
+    srand(seedInt);
 
     int best_size = 0, ant_size;
     float best_time = 0, ant_time;
@@ -62,11 +65,6 @@ int main(int argc, char* argv[]) {
     vector <int> best_tour_time;
 
 
-    ifs.open("seeds/seeds.txt", ifstream::in);
-    if ( !ifs.good() ){
-        cout << "Error opening seed file" << endl;
-        exit (1);
-    }
     create_tau(tau);
 
     bool while_exit=false, imposible=false;

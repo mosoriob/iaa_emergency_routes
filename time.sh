@@ -11,4 +11,5 @@ beta_ant=$6
 q_0=$7
 ro=$9
 tau_0=$9
-./solve-time $instance $loops $cl $M $alpha_ant $beta_ant $q_0 $ro $tau_0
+seed=$10
+time ./solve-time $instance $loops $cl $M $alpha_ant $beta_ant $q_0 $ro $tau_0 $seed
