@@ -23,6 +23,8 @@ float q_0=0.5;
 float ro=0.5;
 float tau_0=1/(10);
 double R1=1, R2=1-R1;
+int seedInt;
+int start;
 ifstream ifs;
 
 /***** Estructuras de representación *****/
@@ -36,7 +38,7 @@ vector<string>  safe_areas;
 
 int main(int argc, char* argv[]) {
 
-    if( argc != 10){
+    if( argc != 12){
         cout << "usage: " << argv[0] << "<filename>\n";
         exit(0);
     }
@@ -51,7 +53,10 @@ int main(int argc, char* argv[]) {
         q_0=atof(argv[7]);
         ro=atof(argv[8]);
         tau_0=atof(argv[9]);
+        seedInt=atoi(argv[10]);
+        start=atoi(argv[11])-1;
     }
+    srand(seedInt);
 
     int best_size = 0, ant_size;
     float best_time = 0, ant_time;
@@ -80,7 +85,7 @@ int main(int argc, char* argv[]) {
 
         for(int i=0; i<M;i++){
             //starting point
-            ants[i].push_back(0);
+            ants[i].push_back(start);
 
             old_next=0;
             while_exit=false;
@@ -124,26 +129,7 @@ int main(int argc, char* argv[]) {
         }
 
     }
-    cout << best_time << endl;
-
-    //cout << time_tour(best_tour_time) << endl;
-    //print_tour(best_tour_time);
-    // vector<int> test_array;
-    // // test_array.push_back(0);
-    // // test_array.push_back(1);
-
-
-    // test_array.push_back(0);
-    // test_array.push_back(5);
-    // test_array.push_back(6);
-    // test_array.push_back(7);
-    // test_array.push_back(12);
-    // test_array.push_back(8);
-    // test_array.push_back(13);
-    // test_array.push_back(14);
-    // test_array.push_back(19);
-
-    // cout  << time_tour(test_array) << endl;
-
+    cout << best_time << " - ";
+    print_tour(best_tour_time);
     return 0;
 }

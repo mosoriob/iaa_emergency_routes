@@ -1,0 +1,12 @@
+algo = bash ACOTSPvParamILS.sh
+execdir = .
+deterministic = 0
+run_obj = runlength
+overall_obj = mean
+cutoff_time = 5
+cutoff_length = max
+tunerTimeout = 100000000
+paramfile = ACOTSP.params
+outdir = out/scenario1
+instance_file = scenario1_lista.txt
+test_instance_file = scenario1_lista.txt

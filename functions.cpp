@@ -1,6 +1,6 @@
 #include "functions.h"
 using namespace std;
-
+extern int seedInt;
 extern int N;
 extern int cl;
 extern int M;
@@ -115,7 +115,7 @@ Selecciona el siguiente nod
 void print_tour(vector <int> &tour) {
     int size = (int) tour.size();
     for(int index = 0; index<size; index++){
-        cout << tour[index] << ",";
+        cout << tour[index]+1 << ",";
     }
     cout << endl;
 }
@@ -155,11 +155,14 @@ vector <int> neighbours(int town, vector<int> tour){
     }
     return candidateList;
 }
-
+double random_float() {
+  double r = ((double) rand() / (RAND_MAX));
+  return r;
+}
+/*
 double random_float() {
   string line = "";
   ifs >> line;
-
   unsigned seed = chrono::system_clock::now().time_since_epoch().count();
   default_random_engine generator (seed);
   //seed_seq seed (line.begin(),line.end());
@@ -167,6 +170,7 @@ double random_float() {
   uniform_real_distribution<double> distribution (0.0,1.0);
   return distribution(generator);
 }
+*/
 
 /*
 Favorecer la exploracion, haciendo menos atractivos los nodos visitados

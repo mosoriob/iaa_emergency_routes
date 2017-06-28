@@ -1,15 +1,13 @@
 instance=$1
-loops=100
+loops=200
 candidateList=15
-ants=20
-alpha_ant=2.92
-beta_ant=9.83
-q_0=0.55
-ro=0.97
-tau=1
+ants=10
+alpha_ant=1
+beta_ant=2
+q_0=0.5
+ro=0.5
+tau=0.1
 seed=$2
-s=$3
-
-
+s=1
 
 ./solve-time $instance $loops $candidateList $ants $alpha_ant $beta_ant $q_0 $ro $tau $seed $s

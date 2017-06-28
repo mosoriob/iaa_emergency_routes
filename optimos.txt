@@ -1,0 +1,5 @@
+peuco1.txt 26.6182
+grade1.txt 3.13239
+grade2.txt 3.41903
+grade3.txt 4.54885
+grade4.txt 6.36513

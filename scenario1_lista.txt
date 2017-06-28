@@ -1,0 +1,5 @@
+instances/peuco/peuco1.txt
+instances/yuan-wang/grade1.txt
+instances/yuan-wang/grade2.txt
+instances/yuan-wang/grade3.txt
+instances/yuan-wang/grade4.txt
